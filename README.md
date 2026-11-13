@@ -6,6 +6,10 @@ This repository provisions an EC2 instance and security group in `ap-southeast-2
 **The Problem Solved:**
 Keeping compute state in `compute/terraform.tfstate` and network state in `network/terraform.tfstate` prevents state collisions, preserves remote outputs across deployments, and allows independent lifecycle management for each repository.
 
+## Prerequisites
+1. **Remote State Backend:** The S3 bucket (`<YOUR-S3-BUCKET-NAME>`) and DynamoDB lock table (`tofu-lab-locks`) must exist in `ap-southeast-2` (see `tofu-aws-network` README for creation commands).
+2. **Network Stack Deployed:** `tofu-aws-network` must already be applied so `network/terraform.tfstate` exists in S3 with exported `vpc_id` and `public_subnet_ids` outputs.
+
 ## Architecture & State Configuration
 - **Region:** `ap-southeast-2`
 - **Backend Bucket:** `<YOUR-S3-BUCKET-NAME>`
@@ -14,7 +18,7 @@ Keeping compute state in `compute/terraform.tfstate` and network state in `netwo
 - **Lock Table:** `tofu-lab-locks`
 
 ## How to Deploy (Step 2)
-1. Ensure `tofu-aws-network` has already been applied and exported its outputs.
+1. Authenticate your AWS SSO session (`aws sso login` and `export AWS_PROFILE=<YOUR-PROFILE>`).
 2. Initialize and apply the compute layer:
 ~~~bash
 tofu init
